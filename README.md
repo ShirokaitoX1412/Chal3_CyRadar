@@ -28,8 +28,8 @@ Tìm mọi thông tin có thể về hệ thống mục tiêu.
 
 ### Lệnh Nmap thực hiện:
 
-```bash
-nmap -sC -sV -Pn -T4 -p- 10.3.145.25 -oN full_scan.txt
+
+
 <img width="1118" height="557" alt="{18ABC7D3-9600-4A70-BE47-71CB66D07061}" src="https://github.com/user-attachments/assets/85befb0d-9491-4778-a776-17d8c760008f" />
 <img width="667" height="533" alt="{9845BFBF-667E-4626-9B19-F541F79008C6}" src="https://github.com/user-attachments/assets/3df6c078-cf61-4a1e-b182-14f4c4e61ead" />
 <img width="864" height="574" alt="{0AB41F54-E405-4BA2-8356-232BA68FC9C8}" src="https://github.com/user-attachments/assets/4e8d773e-b5f3-458a-8f7f-0f8046be7bb7" />
@@ -37,7 +37,7 @@ nmap -sC -sV -Pn -T4 -p- 10.3.145.25 -oN full_scan.txt
 
 
 
-```
+
 
 
 
