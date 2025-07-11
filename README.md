@@ -48,11 +48,8 @@ Tìm mọi thông tin có thể về hệ thống mục tiêu.
 * Framework Python/Flask.
 * Truy cập qua trình duyệt: `http://10.3.145.25:5000`
 * Hiển thị trang “Nyan Cat Upload” → có tính năng upload file → nghi vấn **Unrestricted File Upload**.
-* Header:
+<img width="1022" height="804" alt="{7EDE327D-5B45-4C47-AECC-5850A4B127B2}" src="https://github.com/user-attachments/assets/e8cc7579-f7d0-46e7-a652-d599dc23ee78" />
 
-```
-Server: Werkzeug/2.0.0 Python/3.10.10
-```
 
 #### Port 9998 - Jetty
 
@@ -60,9 +57,8 @@ Server: Werkzeug/2.0.0 Python/3.10.10
 * Cho phép PUT file lên server.
 * Kiểm tra bằng curl:
 
-```bash
-curl -X OPTIONS http://10.3.145.25:9998 -i
-```
+<img width="795" height="803" alt="{60551902-DD23-4228-A90F-893E8241D5BD}" src="https://github.com/user-attachments/assets/c1e520fb-6cea-41a6-9933-25bcc55bb5f9" />
+
 
 * Phản hồi có phương thức `PUT`, nghĩa là có thể upload file độc hại:
 
@@ -81,7 +77,9 @@ X-Powered-By: ASP.NET
 
 * Truy cập: `http://10.3.145.25:11025/_layouts/15/start.aspx#/default.aspx`
 * Là một site SharePoint nội bộ.
-* Có thể tra cứu CVE với các phiên bản SharePoint/IIS 10.0
+
+<img width="913" height="808" alt="{DD46C3AB-A08E-488E-8C5B-448F89AAC4AE}" src="https://github.com/user-attachments/assets/59c6d449-d1e0-4d6d-b7f0-9870713a92c9" />
+
 
 #### LDAP/AD/Kerberos (Port 389, 3268, 88, 464)
 
