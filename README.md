@@ -104,6 +104,49 @@ X-Powered-By: ASP.NET
 <img width="1082" height="325" alt="{66627054-9D47-40B8-81E7-56E80BABBD08}" src="https://github.com/user-attachments/assets/2171ca9b-6100-4ea4-be4a-67857f54e11e" />
 
 
+<img width="1538" height="734" alt="{FF001C93-F300-4D8B-9D6D-306797A4A8B7}" src="https://github.com/user-attachments/assets/fce8da7e-49fe-470d-ae8a-25a43d4c97bf" />
+
+<img width="1295" height="811" alt="{56FA720A-03B2-4FFF-A320-433DAA17F385}" src="https://github.com/user-attachments/assets/a75fb54e-51c9-4b74-ac6c-e684b2694bd9" />
+
+Các endpoint SOAP Web Services (Lists.asmx, Authentication.asmx) bị lộ ra ngoài.
+➤ Ý nghĩa:
+
+    Có thể khai thác để:
+
+        Liệt kê danh sách SharePoint list (nếu không cần auth).
+
+        Xác định authentication mode (Forms/NTLM).
+
+    Toàn bộ ứng dụng thiếu nhiều HTTP Security Headers như:
+
+    Content-Security-Policy
+
+    Strict-Transport-Security
+
+    Referrer-Policy
+
+    Permissions-Policy
+
+    Cross-Origin-*
+
+➤ Ý nghĩa:
+
+    Dễ bị tấn công kiểu XSS, clickjacking, session hijacking nếu kết hợp lỗ hổng khác.
+
+    Đặc biệt thiếu HSTS trên cổng HTTP cho thấy không có enforced HTTPS → có thể MiTM.
+    Lộ thông tin chi tiết về nền tảng backend:
+
+    SharePoint 2016 (16.0.0.4615)
+
+    ASP.NET v4.0.30319
+
+    Microsoft IIS 10.0
+
+➤ Ý nghĩa bảo mật:
+
+    Có thể tra cứu CVE liên quan:
+
+<img width="1600" height="133" alt="{F6862F88-39CD-4E9E-9897-4B9A5CD3FBA5}" src="https://github.com/user-attachments/assets/c6273db4-cf5e-4cd3-88fa-8204809c7671" />
 
 
 
