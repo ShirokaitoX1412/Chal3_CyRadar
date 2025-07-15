@@ -18,14 +18,6 @@ Thực hiện các bước như một cuộc tấn công thật:
 
 Tìm mọi thông tin có thể về hệ thống mục tiêu.
 
-### Công cụ sử dụng:
-
-* `nmap`
-* `whatweb`, `curl`
-* `netcat`, `telnet`
-* `smbclient`, `ldapsearch`
-* `searchsploit`
-
 ### Lệnh Nmap thực hiện:
 
 
@@ -34,10 +26,6 @@ Tìm mọi thông tin có thể về hệ thống mục tiêu.
 <img width="667" height="533" alt="{9845BFBF-667E-4626-9B19-F541F79008C6}" src="https://github.com/user-attachments/assets/3df6c078-cf61-4a1e-b182-14f4c4e61ead" />
 <img width="864" height="574" alt="{0AB41F54-E405-4BA2-8356-232BA68FC9C8}" src="https://github.com/user-attachments/assets/4e8d773e-b5f3-458a-8f7f-0f8046be7bb7" />
 <img width="703" height="573" alt="{01BC9EE7-2FFB-4B84-9E45-E2644D6738B0}" src="https://github.com/user-attachments/assets/83b0f0e4-5983-4853-902a-13579a049507" />
-
-
-
-
 
 
 
@@ -56,19 +44,13 @@ Sử dụng Burpsuite bắt request upload lấy path
 khai thác path traversal trên endpoint /file?path=... bằng cách sử dụng ký tự ..\\..
 <img width="844" height="115" alt="{0CB1E2E4-2624-4437-AFF5-9DA074B702DE}" src="https://github.com/user-attachments/assets/28398058-aea6-42f7-9432-85725aab1802" />
 
-
-
- Có endpoint /console trên Flask/Werkzeug
- <img width="900" height="457" alt="{27F4FAC1-2D9F-4EA5-8190-CF6ABD7F84BB}" src="https://github.com/user-attachments/assets/ac7897ce-df34-40fa-a696-1a823a25a95c" />
-
+Có endpoint /console trên Flask/Werkzeug
+<img width="900" height="457" alt="{27F4FAC1-2D9F-4EA5-8190-CF6ABD7F84BB}" src="https://github.com/user-attachments/assets/ac7897ce-df34-40fa-a696-1a823a25a95c" />
 
 <img width="1086" height="129" alt="{23F798A9-2F58-4E92-B7D5-140E641EA704}" src="https://github.com/user-attachments/assets/b82078e4-ee7f-4149-8955-06b582c9f224" />
 
-Lấy cookie phòng trường hợp mất PIN 
-<img width="446" height="68" alt="{AEF7E8E7-6FAB-4620-ADAC-9F0CF97C638D}" src="https://github.com/user-attachments/assets/52965e26-bb45-4245-885c-b2d48f07fdef" />
 Lỗi khi thực thi lệnh python => console đã bị vô hiệu hóa
 <img width="1132" height="340" alt="{8A7C8980-3D07-437C-8C10-D8E6B4BC5EAD}" src="https://github.com/user-attachments/assets/2e818572-7c05-49d6-9d45-bd158340584a" />
-
 
 
 #### Port 9998 - Jetty
@@ -79,19 +61,33 @@ Lỗi khi thực thi lệnh python => console đã bị vô hiệu hóa
 
 <img width="795" height="803" alt="{60551902-DD23-4228-A90F-893E8241D5BD}" src="https://github.com/user-attachments/assets/c1e520fb-6cea-41a6-9933-25bcc55bb5f9" />
 
-<img width="870" height="425" alt="{72287263-1A27-487A-9731-F7EF6B2B96A9}" src="https://github.com/user-attachments/assets/c1fce0f2-e584-49f5-8d53-493c7e6bc630" />
+
+<img width="529" height="27" alt="{350A89D1-420F-40FF-BDF7-BD693475678F}" src="https://github.com/user-attachments/assets/89ab8472-f0e0-4e37-9806-733c8675b28e" />
+
+Ý tưởng 
+Tạo một file .jar chứa mã Java độc hại.
+Gửi .jar đó lên endpoint /meta.
+Khi server xử lý file, nó thực thi mã bên trong → RCE.
+
+Tạo 2 terminal 1 cái lắng nghe từ server 1 cái gửi payload lên apache tika
+Bước 1 : Terminal 1 – Khởi động Interactsh client
+Khởi động Interactsh để nhận kết nối từ server nếu payload thành công:
+<img width="802" height="268" alt="{CDA2458D-D41D-48A5-AA5C-510248ED751C}" src="https://github.com/user-attachments/assets/2f74e6e3-be1f-40a1-8b06-cbedd3085a49" />
+Sau khi chạy nhận được subdomain d1r5iihqrgmn6dc0mtmggyixg9hd1miu8.oast.site
+
+Bước 2 Terminal 2  Viết mã Java độc hại
+<img width="933" height="197" alt="{D63AC816-5E0F-49B2-9F94-0127F32181D5}" src="https://github.com/user-attachments/assets/b2898ed9-9fc8-4c5e-8844-b2d22c76c4e1" />
+Khi .jar được load, nó gửi request về subdomain
+
+Bước 3 – Gửi file .jar đến Tika
+<img width="898" height="138" alt="{5449ACF4-E0DB-4B83-97E5-8D2AD53E742B}" src="https://github.com/user-attachments/assets/5d448061-2ee3-48e9-a920-cc93d1e7d6da" />
+Sau đó kiểm tra terminal 1 sẽ thấy log 
+<img width="960" height="51" alt="{0F02E2A0-0890-4308-8C18-1BD341437564}" src="https://github.com/user-attachments/assets/3d552d40-1ee2-4e3a-aa50-860ab01db4c0" />
+
 
 
 
 #### Port 11025 - SharePoint
-
-* Header:
-
-```
-Server: Microsoft-IIS/10.0
-X-Powered-By: ASP.NET
-```
-
 * Truy cập: `http://10.3.145.25:11025/_layouts/15/start.aspx#/default.aspx`
 * Là một site SharePoint nội bộ.
 
