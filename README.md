@@ -93,7 +93,7 @@ Sau đó kiểm tra terminal 1 sẽ thấy log
 
 <img width="913" height="808" alt="{DD46C3AB-A08E-488E-8C5B-448F89AAC4AE}" src="https://github.com/user-attachments/assets/59c6d449-d1e0-4d6d-b7f0-9870713a92c9" />
 
-<img width="829" height="315" alt="{00334761-7EC4-42A3-8269-BA143461DEBB}" src="https://github.com/user-attachments/assets/65ef19fc-a1c7-4b4c-865b-096fc54d4ea3" />
+
 <img width="1082" height="325" alt="{66627054-9D47-40B8-81E7-56E80BABBD08}" src="https://github.com/user-attachments/assets/2171ca9b-6100-4ea4-be4a-67857f54e11e" />
 
 
