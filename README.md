@@ -97,9 +97,7 @@ Sau đó kiểm tra terminal 1 sẽ thấy log
 <img width="1082" height="325" alt="{66627054-9D47-40B8-81E7-56E80BABBD08}" src="https://github.com/user-attachments/assets/2171ca9b-6100-4ea4-be4a-67857f54e11e" />
 
 
-<img width="1538" height="734" alt="{FF001C93-F300-4D8B-9D6D-306797A4A8B7}" src="https://github.com/user-attachments/assets/fce8da7e-49fe-470d-ae8a-25a43d4c97bf" />
-
-<img width="1295" height="811" alt="{56FA720A-03B2-4FFF-A320-433DAA17F385}" src="https://github.com/user-attachments/assets/a75fb54e-51c9-4b74-ac6c-e684b2694bd9" />
-
-<img width="866" height="301" alt="{9208D7AB-F0AA-4730-B0D6-B2844BBFEA82}" src="https://github.com/user-attachments/assets/fcc5778c-b41c-4fb1-97ef-f3f5a751d0ca" />
+<img width="1093" height="463" alt="{F1055EB4-BE26-41F8-A4D8-F86774D17C01}" src="https://github.com/user-attachments/assets/279e72cd-de0a-40e0-b922-e43dbb09adb0" />
+_vti_inf.html → tiềm năng liên quan đến CV
+CVE-2019-0604 – RCE qua ViewState
 
