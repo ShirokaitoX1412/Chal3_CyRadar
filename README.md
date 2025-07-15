@@ -42,7 +42,7 @@ Tìm mọi thông tin có thể về hệ thống mục tiêu.
 
 
 ### Phân tích từng dịch vụ:
-
+Sử dụng nuclei kiểm thử từng port 
 #### Port 5000 - Werkzeug HTTP
 
 * Framework Python/Flask.
@@ -79,12 +79,9 @@ Lỗi khi thực thi lệnh python => console đã bị vô hiệu hóa
 
 <img width="795" height="803" alt="{60551902-DD23-4228-A90F-893E8241D5BD}" src="https://github.com/user-attachments/assets/c1e520fb-6cea-41a6-9933-25bcc55bb5f9" />
 
+<img width="870" height="425" alt="{72287263-1A27-487A-9731-F7EF6B2B96A9}" src="https://github.com/user-attachments/assets/c1fce0f2-e584-49f5-8d53-493c7e6bc630" />
 
-* Phản hồi có phương thức `PUT`, nghĩa là có thể upload file độc hại:
 
-```http
-Allow: GET,HEAD,POST,PUT,DELETE,OPTIONS
-```
 
 #### Port 11025 - SharePoint
 
@@ -108,85 +105,5 @@ X-Powered-By: ASP.NET
 
 <img width="1295" height="811" alt="{56FA720A-03B2-4FFF-A320-433DAA17F385}" src="https://github.com/user-attachments/assets/a75fb54e-51c9-4b74-ac6c-e684b2694bd9" />
 
-Các endpoint SOAP Web Services (Lists.asmx, Authentication.asmx) bị lộ ra ngoài.
-➤ Ý nghĩa:
+<img width="866" height="301" alt="{9208D7AB-F0AA-4730-B0D6-B2844BBFEA82}" src="https://github.com/user-attachments/assets/fcc5778c-b41c-4fb1-97ef-f3f5a751d0ca" />
 
-    Có thể khai thác để:
-
-        Liệt kê danh sách SharePoint list (nếu không cần auth).
-
-        Xác định authentication mode (Forms/NTLM).
-
-    Toàn bộ ứng dụng thiếu nhiều HTTP Security Headers như:
-
-    Content-Security-Policy
-
-    Strict-Transport-Security
-
-    Referrer-Policy
-
-    Permissions-Policy
-
-    Cross-Origin-*
-
-➤ Ý nghĩa:
-
-    Dễ bị tấn công kiểu XSS, clickjacking, session hijacking nếu kết hợp lỗ hổng khác.
-
-    Đặc biệt thiếu HSTS trên cổng HTTP cho thấy không có enforced HTTPS → có thể MiTM.
-    Lộ thông tin chi tiết về nền tảng backend:
-
-    SharePoint 2016 (16.0.0.4615)
-
-    ASP.NET v4.0.30319
-
-    Microsoft IIS 10.0
-
-➤ Ý nghĩa bảo mật:
-
-    Có thể tra cứu CVE liên quan:
-
-<img width="1600" height="133" alt="{F6862F88-39CD-4E9E-9897-4B9A5CD3FBA5}" src="https://github.com/user-attachments/assets/c6273db4-cf5e-4cd3-88fa-8204809c7671" />
-
-
-
-
-#### LDAP/AD/Kerberos (Port 389, 3268, 88, 464)
-
-* Xác định domain: `xteam.local`
-* LDAP từ chối anonymous bind:
-
-```bash
-ldapsearch -x -h 10.3.145.25 -s base
-# => result: Insufficient access
-```
-
-* Tuy nhiên có thể khai thác khi có thông tin user sau này.
-
-#### MSSQL (port 54681)
-
-* Banner cho thấy chạy MSSQL Server 2014 RTM
-* Có thể dùng `sqsh`, `impacket-mssqlclient`, hoặc PowerShell để truy cập nếu có credential
-
-#### SMB (Port 139/445)
-
-* Thử liệt kê share:
-
-```bash
-smbclient -L \\10.3.145.25 -N
-```
-
-* Kết quả: bị từ chối anonymous
-
-```bash
-Anonymous login successful
-NT_STATUS_ACCESS_DENIED listing \\*
-```
-
-### Nhận định:
-
-* Các cổng đáng chú ý cho exploit: 5000 (Werkzeug upload), 9998 (Jetty PUT), 11025 (SharePoint).
-* SMB và LDAP cần credential → có thể thu thập sau.
-* Nhiều dịch vụ nội bộ phản ánh đây là một máy trong domain (xteam.local), có thể dẫn đến leo thang đặc quyền sau khi có shell.
-
-→ Tiếp tục xác định điểm tấn công từ các web service có khả năng dễ khai thác nhất.
