@@ -85,6 +85,7 @@ Sau đó kiểm tra terminal 1 sẽ thấy log
 
 
 
+
 #### Port 11025 - SharePoint
 * Truy cập: `http://10.3.145.25:11025/_layouts/15/start.aspx#/default.aspx`
 * Là một site SharePoint nội bộ.
@@ -96,6 +97,7 @@ Sau đó kiểm tra terminal 1 sẽ thấy log
 
 
 <img width="1093" height="463" alt="{F1055EB4-BE26-41F8-A4D8-F86774D17C01}" src="https://github.com/user-attachments/assets/279e72cd-de0a-40e0-b922-e43dbb09adb0" />
+
 _vti_inf.html → tiềm năng liên quan đến CV
 CVE-2019-0604 – RCE qua ViewState
 
