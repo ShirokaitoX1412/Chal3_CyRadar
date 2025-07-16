@@ -86,6 +86,7 @@ Sau đó kiểm tra terminal 1 sẽ thấy log
 
 
 
+
 #### Port 11025 - SharePoint
 * Truy cập: `http://10.3.145.25:11025/_layouts/15/start.aspx#/default.aspx`
 * Là một site SharePoint nội bộ.
